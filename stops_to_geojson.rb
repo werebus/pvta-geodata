@@ -1,26 +1,38 @@
 require 'json'
 require 'csv'
 
-json = { 'type' => 'FeatureCollection',
-         'crs'  => { 'type'       => 'name',
-                     'properties' => { 'name' => 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-         'features' => []
-       }
+class StopParser
+  def initialize(filename)
+    @file = filename
+    @json = { 'type' => 'FeatureCollection',
+              'crs'  => { 'type'       => 'name',
+                          'properties' => { 'name' => 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+              'features' => []
+            }
+    @fields = {}
 
-CSV.open('stops.txt', 'r') do |csv|
-  fields = {}
-  field_list = csv.shift
-  field_list.each_with_index do |field, index|
-    fields[field.to_sym] = index
+    CSV.open(@file, 'r') do |csv|
+      field_list = csv.shift
+      field_list.each_with_index do |field, index|
+        @fields[field.to_sym] = index
+      end
+    end
   end
 
-  csv.each do |row|
-    json['features'] << { 'type'       => 'Feature',
-                          'properties' => { 'id'          => row[fields[:stop_id]],
-                                            'name'        => row[fields[:stop_name]] },
-                          'geometry'   => { 'type'        => 'Point',
-                                            'coordinates' => [ row[fields[:stop_lon]], row[fields[:stop_lat]] ] }}
+  def read_features
+    CSV.open(@file, 'r') do |csv|
+      csv.shift
+      csv.each do |row|
+        @json['features'] << { 'type'       => 'Feature',
+                               'properties' => { 'id'          => row[@fields[:stop_id]],
+                                                 'name'        => row[@fields[:stop_name]] },
+                               'geometry'   => { 'type'        => 'Point',
+                                                 'coordinates' => [ row[@fields[:stop_lon]], row[@fields[:stop_lat]] ] }}
+      end
+    end
+  end
+
+  def json
+    JSON.pretty_generate(@json)
   end
 end
-
-puts JSON.pretty_generate(json)
