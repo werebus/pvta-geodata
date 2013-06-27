@@ -42,7 +42,11 @@ class ShapeParser
     end
   end
 
-  def json
-    JSON.pretty_generate(@json)
+  def json(pretty = false)
+    if pretty
+      JSON.pretty_generate(@json)
+    else
+      JSON.generate(@json)
+    end
   end
 end
