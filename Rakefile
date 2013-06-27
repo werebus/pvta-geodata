@@ -1,3 +1,6 @@
+require_relative 'shape_parser'
+require_relative 'stop_parser'
+
 FeedURL = "http://pvta.com/g_trans/google_transit.zip"
 FilePath = "gtfs/google_transit.zip"
 
@@ -20,4 +23,20 @@ namespace :gtfs do
   end
 
   task :default => [:clean, :fetch, :unzip]
+end
+
+namespace :json do
+  desc "Output stop geojson"
+  task :stops do
+    sp = StopParser.new('gtfs/stops.txt')
+    sp.read_features
+    puts sp.json
+  end
+
+  desc "Output shape geojson"
+  task :shapes do
+    sp = ShapeParser.new('gtfs/shapes.txt')
+    sp.read_features
+    puts sp.json
+  end
 end
