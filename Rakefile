@@ -9,11 +9,13 @@ task :gtfs => "gtfs:default"
 namespace :gtfs do
   desc "Remove any existing gtfs data"
   task :clean do
+    puts "Deleting:"
     system "rm -v gtfs/*"
   end
 
   desc "Download the gtfs zip file"
   task :fetch do
+    puts "Downloading #{FeedURL}:"
     system "curl -o #{FilePath} #{FeedURL}"
   end
 

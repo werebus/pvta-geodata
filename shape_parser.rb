@@ -2,6 +2,8 @@ require 'json'
 require 'csv'
 
 class ShapeParser
+  attr_reader :lines, :json
+
   def initialize(filename)
     @file = filename
     @lines = []
