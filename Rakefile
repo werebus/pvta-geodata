@@ -23,9 +23,9 @@ file 'pvta_stops.geojson' => 'gtfs.zip' do
       geometries: source.stops.map do |stop|
         {
           type: 'Point',
+          id: stop.id.to_i,
           coordinates: [stop.lon.to_f, stop.lat.to_f],
           properties: {
-            id: stop.id.to_i,
             code: stop.code,
             name: stop.name
           }
