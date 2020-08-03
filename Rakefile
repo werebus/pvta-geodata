@@ -19,15 +19,18 @@ file 'pvta_stops.geojson' => 'gtfs.zip' do
   source = GTFS::Source.build('gtfs.zip')
   document =
     {
-      type: 'GeometryCollection',
-      geometries: source.stops.map do |stop|
+      type: 'FeatureCollection',
+      features: source.stops.map do |stop|
         {
-          type: 'Point',
+          type: 'Feature',
           id: stop.id.to_i,
-          coordinates: [stop.lon.to_f, stop.lat.to_f],
           properties: {
             code: stop.code,
             name: stop.name
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [stop.lon.to_f, stop.lat.to_f]
           }
         }
       end
