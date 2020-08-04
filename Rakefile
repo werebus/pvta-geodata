@@ -5,6 +5,7 @@ require 'json'
 require 'net/http'
 require 'rake/clean'
 
+desc 'Fetch gtfs data from PVTA'
 file 'gtfs.zip' do
   File.open('gtfs.zip', 'wb') do |f|
     Net::HTTP.start('pvta.com') do |h|
@@ -15,6 +16,7 @@ file 'gtfs.zip' do
 end
 CLEAN << 'gtfs.zip'
 
+desc 'Generate stops file'
 file 'pvta_stops.geojson' => 'gtfs.zip' do
   source = GTFS::Source.build('gtfs.zip')
   document =
@@ -42,6 +44,7 @@ file 'pvta_stops.geojson' => 'gtfs.zip' do
 end
 CLOBBER << 'pvta_stops.geojson'
 
+desc 'Generate routes file'
 file 'pvta_routes.geojson' => 'gtfs.zip' do
   source = GTFS::Source.build('gtfs.zip')
   # { shape_id => { route: route_id, points: [] }
@@ -86,3 +89,6 @@ file 'pvta_routes.geojson' => 'gtfs.zip' do
   end
 end
 CLOBBER << 'pvta_routes.geojson'
+
+desc 'Generate all files'
+task 'generate' => ['pvta_stops.geojson', 'pvta_routes.geojson']
