@@ -61,13 +61,13 @@ file 'pvta_routes.geojson' => 'gtfs.zip' do
     document[:features] <<
       {
         type: 'Feature',
+        id: route.id,
+        properties: {
+          short_name: route.short_name,
+          long_name: route.long_name
+        },
         geometry: {
           type: 'GeometryCollection',
-          properties: {
-            id: route.id,
-            short_name: route.short_name,
-            long_name: route.long_name
-          },
           geometries: shapes.map do |shape_id, attributes|
             next unless attributes[:route] == route.id
             {
