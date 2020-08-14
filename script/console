@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fancy_irb'
+require 'irb'
+require 'irb/completion'
+require 'pathname'
+require 'wirb'
+
+$LOAD_PATH.unshift Pathname(__dir__).join('..', 'lib')
+require 'feed_zip_file'
+require 'generator'
+require 'routes_generator'
+require 'stops_generator'
+
+FEED_FILE = Pathname(__dir__).join('..', 'gtfs.zip').expand_path
+
+STDOUT.sync = true
+IRB.setup nil
+IRB.conf.merge!(
+  AUTO_INDENT: true,
+  IRB_NAME: 'pvta-geodata',
+  IRB_PATH: '(pvta-geodata)',
+  PROMPT_MODE: :CLASSIC,
+  RC: false
+)
+
+FancyIrb.start
+Wirb.start
+IRB::Irb.new.run(IRB.conf)
