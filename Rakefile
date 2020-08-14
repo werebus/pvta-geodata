@@ -9,10 +9,10 @@ require 'generator'
 require 'routes_generator'
 require 'stops_generator'
 
-FEED_FILE = Pathname(__dir__).join('gtfs.zip').expand_path.to_s
+FEED_FILE = Pathname(__dir__).join('gtfs.zip').expand_path
 
 desc 'Fetch gtfs data from PVTA'
-file FEED_FILE do
+file FEED_FILE.basename do
   fz = FeedZipFile.new('http://pvta.com/g_trans/google_transit.zip', FEED_FILE)
   fz.fetch!
 end
