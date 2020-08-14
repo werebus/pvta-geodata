@@ -2,22 +2,14 @@
 
 class StopsGenerator < Generator
   def features
-    {
-      type: 'FeatureCollection',
+    { type: 'FeatureCollection',
       features: @source.stops.map do |stop|
-        {
-          type: 'Feature',
+        { type: 'Feature',
           id: stop.id.to_i,
-          properties: {
-            code: stop.code,
-            name: stop.name
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [stop.lon.to_f, stop.lat.to_f]
-          }
-        }
-      end
-    }
+          properties: { code: stop.code,
+                        name: stop.name },
+          geometry: { type: 'Point',
+                      coordinates: [stop.lon.to_f, stop.lat.to_f] } }
+      end }
   end
 end

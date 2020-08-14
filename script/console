@@ -15,7 +15,7 @@ require 'stops_generator'
 
 FEED_FILE = Pathname(__dir__).join('..', 'gtfs.zip').expand_path
 
-STDOUT.sync = true
+$stdout.sync = true
 IRB.setup nil
 IRB.conf.merge!(
   AUTO_INDENT: true,

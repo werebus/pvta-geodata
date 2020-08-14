@@ -6,8 +6,8 @@ require 'uri'
 class FeedZipFile
   attr_reader :path
 
-  def initialize(u, path)
-    @url = URI.parse(u)
+  def initialize(url, path)
+    @url = URI.parse(url)
     @path = path
   end
 

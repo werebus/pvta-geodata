@@ -13,6 +13,6 @@ class Generator
   end
 
   def json
-    JSON.generate(features) + "\n"
+    "#{JSON.generate(features)}\n"
   end
 end

@@ -9,5 +9,6 @@ gem 'rake'
 
 group :development do
   gem 'fancy_irb'
+  gem 'rubocop'
   gem 'wirb'
 end
