@@ -1,91 +1,37 @@
 # frozen_string_literal: true
 
-require 'gtfs'
-require 'json'
-require 'net/http'
+require 'pathname'
 require 'rake/clean'
 
+$LOAD_PATH.unshift Pathname(__dir__).join('lib').expand_path
+require 'feed_zip_file'
+require 'generator'
+require 'routes_generator'
+require 'stops_generator'
+
+FEED_FILE = Pathname(__dir__).join('gtfs.zip').expand_path.to_s
+
 desc 'Fetch gtfs data from PVTA'
-file 'gtfs.zip' do
-  File.open('gtfs.zip', 'wb') do |f|
-    Net::HTTP.start('pvta.com') do |h|
-      resp = h.get('/g_trans/google_transit.zip')
-      f.write resp.body if resp.is_a? Net::HTTPSuccess
-    end
-  end
+file FEED_FILE do
+  fz = FeedZipFile.new('http://pvta.com/g_trans/google_transit.zip', FEED_FILE)
+  fz.fetch!
 end
-CLEAN << 'gtfs.zip'
+CLEAN << FEED_FILE
 
 desc 'Generate stops file'
-file 'pvta_stops.geojson' => 'gtfs.zip' do
-  source = GTFS::Source.build('gtfs.zip')
-  document =
-    {
-      type: 'FeatureCollection',
-      features: source.stops.map do |stop|
-        {
-          type: 'Feature',
-          id: stop.id.to_i,
-          properties: {
-            code: stop.code,
-            name: stop.name
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [stop.lon.to_f, stop.lat.to_f]
-          }
-        }
-      end
-    }
+file 'pvta_stops.geojson' => FEED_FILE do
+  sg = StopsGenerator.new(FEED_FILE)
   File.open('pvta_stops.geojson', 'w') do |f|
-    f.write(JSON.generate(document))
-    f.write("\n")
+    f.write sg.json
   end
 end
 CLOBBER << 'pvta_stops.geojson'
 
 desc 'Generate routes file'
-file 'pvta_routes.geojson' => 'gtfs.zip' do
-  source = GTFS::Source.build('gtfs.zip')
-  # { shape_id => { route: route_id, points: [] }
-  shapes = Hash.new { |hash, key| hash[key] = { points: [] } }
-  document =
-    {
-      type: 'FeatureCollection',
-      features: []
-    }
-  source.shapes.each do |shape|
-    shapes[shape.id][:points] << shape
-  end
-  source.trips.each do |trip|
-    shapes[trip.shape_id][:route] ||= trip.route_id
-  end
-  source.routes.each do |route|
-    document[:features] <<
-      {
-        type: 'Feature',
-        id: route.id,
-        properties: {
-          short_name: route.short_name,
-          long_name: route.long_name
-        },
-        geometry: {
-          type: 'GeometryCollection',
-          geometries: shapes.map do |shape_id, attributes|
-            next unless attributes[:route] == route.id
-            {
-              type: 'LineString',
-              coordinates: attributes[:points].sort_by { |point| point.pt_sequence.to_i }.map do |point|
-                [point.pt_lon.to_f, point.pt_lat.to_f]
-              end
-            }
-          end.compact
-        }
-      }
-  end
+file 'pvta_routes.geojson' => FEED_FILE do
+  rg = RoutesGenerator.new(FEED_FILE)
   File.open('pvta_routes.geojson', 'w') do |f|
-    f.write(JSON.generate(document))
-    f.write("\n")
+    f.write rg.json
   end
 end
 CLOBBER << 'pvta_routes.geojson'
