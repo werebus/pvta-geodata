@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'fancy_irb'
 require 'irb'
 require 'irb/completion'
 require 'pathname'
-require 'wirb'
 
 $LOAD_PATH.unshift Pathname(__dir__).join('..', 'lib')
 require 'feed_zip_file'
@@ -25,6 +23,4 @@ IRB.conf.merge!(
   RC: false
 )
 
-FancyIrb.start
-Wirb.start
 IRB::Irb.new.run(IRB.conf)

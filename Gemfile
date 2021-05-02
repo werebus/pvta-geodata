@@ -8,8 +8,6 @@ gem 'json'
 gem 'rake'
 
 group :development do
-  gem 'fancy_irb'
   gem 'rubocop'
   gem 'rubocop-rake'
-  gem 'wirb'
 end
