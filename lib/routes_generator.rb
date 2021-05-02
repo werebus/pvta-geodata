@@ -29,13 +29,22 @@ class RoutesGenerator < Generator
     return @shapes if @shapes
 
     shapes = Hash.new { |hash, key| hash[key] = { points: [] } }
-    @source.shapes.each do |shape|
-      shapes[shape.id][:points] << shape
-    end
+    @shapes = with_trips(with_points(shapes))
+  end
 
-    @source.trips.each do |trip|
-      shapes[trip.shape_id][:route] ||= trip.route_id
+  def with_points(shapes)
+    shapes.dup.tap do |s|
+      @source.shapes.each do |shape|
+        s[shape.id][:points] << shape
+      end
     end
-    @shapes = shapes
+  end
+
+  def with_trips(shapes)
+    shapes.dup.tap do |s|
+      @source.trips.each do |trip|
+        s[trip.shape_id][:route] ||= trip.route_id
+      end
+    end
   end
 end
