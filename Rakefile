@@ -21,14 +21,14 @@ CLEAN << FEED_FILE
 desc 'Generate stops file'
 file 'pvta_stops.geojson' => FEED_FILE.basename do
   sg = StopsGenerator.new(FEED_FILE)
-  File.open('pvta_stops.geojson', 'w') { |f| f.write sg.json }
+  File.write('pvta_stops.geojson', sg.json)
 end
 CLOBBER << 'pvta_stops.geojson'
 
 desc 'Generate routes file'
 file 'pvta_routes.geojson' => FEED_FILE.basename do
   rg = RoutesGenerator.new(FEED_FILE)
-  File.open('pvta_routes.geojson', 'w') { |f| f.write rg.json }
+  File.write('pvta_routes.geojson', rg.json)
 end
 CLOBBER << 'pvta_routes.geojson'
 
