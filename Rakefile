@@ -13,7 +13,7 @@ FEED_FILE = Pathname(__dir__).join('gtfs.zip').expand_path
 
 desc 'Fetch gtfs data from PVTA'
 file FEED_FILE.basename do
-  fz = FeedZipFile.new('http://pvta.com/g_trans/google_transit.zip', FEED_FILE)
+  fz = FeedZipFile.new('https://www.pvta.com/g_trans/google_transit.zip', FEED_FILE)
   fz.fetch!
 end
 CLEAN << FEED_FILE

@@ -13,9 +13,12 @@ class FeedZipFile
 
   def fetch!
     File.open(@path, 'wb') do |f|
-      Net::HTTP.start(@url.host) do |h|
-        resp = h.get(@url.path)
-        f.write resp.body if resp.is_a? Net::HTTPSuccess
+      resp = Net::HTTP.get_response(@url)
+      if resp.is_a? Net::HTTPSuccess
+        f.write resp.body
+      else
+        File.unlink(@path)
+        raise "Failed to fetch feed: #{resp.message}"
       end
     end
   end
