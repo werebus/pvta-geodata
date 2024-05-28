@@ -3,11 +3,10 @@ feed data.
 
 Data files
 ==========
-Data are stored in "geo-json" files, which GitHub (conveniently) displays as
-maps.
+Data are stored in "geo-json" files. GitHub used to render them directly, but
+it appears that, with a recent switch to Bing Maps, that the functionality of
+the rendered maps had been significantly reduced.
 
-* [All PVTA stops](pvta_stops.geojson)
-* [All PVTA route polylines](pvta_routes.geojson)
 
 Generation
 =============
