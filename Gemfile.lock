@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    csv (3.3.0)
     gtfs (0.4.2)
       multi_json
       rake
@@ -43,6 +44,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  csv
   gtfs
   json
   rake
